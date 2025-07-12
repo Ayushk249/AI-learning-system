@@ -153,3 +153,9 @@ export interface FilledBlank {
   elementId: string;
   isCorrect: boolean;
 }
+
+export interface LoadingSpinnerProps {
+  size?: 'sm' | 'md' | 'lg';
+  color?: 'primary' | 'white' | 'neutral';
+  className?: string;
+}

@@ -1,27 +1,119 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Send, Lightbulb, Target, Zap, Users, BookOpen, Calculator, Globe } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 const Home = () => {
   const [userQuery, setUserQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userQuery.trim()) return;
     
     setIsLoading(true);
     console.log('User query stored:', userQuery);
     
-    // TODO: Here you'll add your OpenAI API call later
-    // For now, just simulate loading
-    setTimeout(() => {
+    try {
+      // TODO: Replace this with your actual API call
+      // const response = await fetch('your-api-endpoint', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ query: userQuery }),
+      // });
+      // const data = await response.json();
+      
+      // For now, simulate the API response
+      const simulateApiCall = () => {
+        return new Promise<any>((resolve) => {
+          setTimeout(() => {
+            // Simulate different responses based on query content
+            const mockResponses = {
+              chair: {
+                subject_area: 'History, Design, Furniture',
+                depth_level: 'Introductory',
+                question_type: 'Factual',
+                curiosity_tree: [
+                  'Evolution of chair design over time',
+                  'Historical periods and their influence on chair styles',
+                  'Notable chair designers and their contributions',
+                  'Cultural significance of chairs in different societies'
+                ]
+              },
+              solar: {
+                subject_area: 'Astronomy, Physics, Science',
+                depth_level: 'Introductory',
+                question_type: 'Factual',
+                curiosity_tree: [
+                  'Formation and structure of our solar system',
+                  'Characteristics of planets and their moons',
+                  'The Sun as the center of our solar system',
+                  'Exploration missions and space discoveries'
+                ]
+              },
+              math: {
+                subject_area: 'Mathematics, Arithmetic',
+                depth_level: 'Introductory',
+                question_type: 'Procedural',
+                curiosity_tree: [
+                  'Understanding multiplication concepts and patterns',
+                  'Memory techniques and strategies for times tables',
+                  'Real-world applications of multiplication',
+                  'Building foundation for advanced mathematical concepts'
+                ]
+              },
+              default: {
+                subject_area: 'General Knowledge',
+                depth_level: 'Introductory',
+                question_type: 'Factual',
+                curiosity_tree: [
+                  'Fundamental concepts and definitions',
+                  'Historical context and background',
+                  'Practical applications and examples',
+                  'Related topics for further exploration'
+                ]
+              }
+            };
+
+            // Simple logic to pick appropriate response
+            const query = userQuery.toLowerCase();
+            let responseKey = 'default';
+            
+            if (query.includes('chair') || query.includes('furniture')) {
+              responseKey = 'chair';
+            } else if (query.includes('solar') || query.includes('planet')) {
+              responseKey = 'solar';
+            } else if (query.includes('math') || query.includes('multiplication')) {
+              responseKey = 'math';
+            }
+
+            resolve(mockResponses[responseKey]);
+          }, 2000); // 2 second delay to simulate API call
+        });
+      };
+
+      const responseData = await simulateApiCall();
+      
+      // Navigate to Information page with the response data
+      navigate('/information', {
+        state: {
+          responseData,
+          userQuery
+        }
+      });
+      
+    } catch (error) {
+      console.error('Error processing query:', error);
+      // You can add error handling here (e.g., show a toast notification)
+    } finally {
       setIsLoading(false);
-      // You can navigate to a results page or handle the response here
-    }, 1000);
+    }
   };
 
   const handleExampleClick = (example: string) => {
@@ -38,7 +130,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-w-7xl min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 px-4 sm:px-6 lg:px-8 py-12">
+    <div className="w-full min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero Section with Input */}
       <div className="text-center mb-16 max-w-4xl mx-auto">
         <motion.div
@@ -74,13 +166,13 @@ const Home = () => {
                   <Button
                     type="submit"
                     disabled={!userQuery.trim() || isLoading}
-                    className="absolute bottom-3 right-3 gap-2"
+                    className="absolute bottom-3 right-3 gap-2 bg-slate-600 text-white hover:bg-slate-700 transition-colors"
                     size="sm"
                   >
                     {isLoading ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                        Creating...
+                        <LoadingSpinner size="sm" color="white" />
+                        Analyzing...
                       </>
                     ) : (
                       <>
@@ -92,13 +184,35 @@ const Home = () => {
                 </div>
                 
                 <div className="text-sm text-neutral-500 text-center">
-                  Press Shift + Enter for a new line, or click Generate to create your learning experience
+                  {isLoading 
+                    ? "Creating your personalized learning experience..." 
+                    : "Press Shift + Enter for a new line, or click Generate to create your learning experience"
+                  }
                 </div>
               </form>
             </Card>
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Show loading state overlay when processing */}
+      {isLoading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
+          <Card className="p-8 text-center max-w-md mx-4">
+            <LoadingSpinner size="lg" color="primary" className="mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-neutral-800 mb-2">
+              Processing Your Request
+            </h3>
+            <p className="text-neutral-600">
+              Analyzing your query and preparing learning pathways...
+            </p>
+          </Card>
+        </motion.div>
+      )}
 
       {/* Example Queries */}
       <motion.div
@@ -115,12 +229,13 @@ const Home = () => {
             <motion.button
               key={index}
               onClick={() => handleExampleClick(example)}
-              className="text-left p-4 rounded-lg border border-neutral-200 hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 group"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              className="text-left p-4 rounded-lg border border-neutral-200 hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
+              whileHover={{ scale: isLoading ? 1 : 1.02 }}
+              whileTap={{ scale: isLoading ? 1 : 0.98 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 + index * 0.1 }}
+              disabled={isLoading}
             >
               <div className="flex items-start gap-3">
                 <div className="p-2 rounded-full bg-primary-100 group-hover:bg-primary-200 transition-colors">

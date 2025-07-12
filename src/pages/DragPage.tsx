@@ -1,23 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Play, Trophy, Target } from 'lucide-react';
+import { ArrowLeft, Play, Trophy, Target, Home, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import DragDropGame from '../template/dragdrop/DragGame';
 import type { Game } from '../types/index';
-import games from "../drag"
 
+interface DragPageData {
+  games: Game[];
+  topic: string;
+  originalQuery?: string;
+  returnPath?: string;
+}
 
-const GameDemo: React.FC = () => {
-  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+const DragPage: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [currentGameIndex, setCurrentGameIndex] = useState(0);
   const [completedGames, setCompletedGames] = useState<Set<string>>(new Set());
+
+  // Get passed data - NO FALLBACK, only use passed games
+  const passedData = location.state as DragPageData;
+
+  // If no games data passed, show error and redirect
+  if (!passedData || !passedData.games || passedData.games.length === 0) {
+    return (
+      <div className="w-full min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-neutral-800 mb-4">No games found</h2>
+          <p className="text-neutral-600 mb-6">
+            It seems you navigated here without game data. Please go back and select a topic first.
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Button onClick={() => navigate('/information')}>
+              Return to Topics
+            </Button>
+            <Button variant="outline" onClick={() => navigate('/')}>
+              Go Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const { games, topic, originalQuery, returnPath } = passedData;
+  const currentGame = games[currentGameIndex];
 
   const handleGameComplete = (gameId: string) => {
     setCompletedGames(prev => new Set([...prev, gameId]));
   };
 
-  const handleBackToMenu = () => {
-    setSelectedGame(null);
+  const handleNextGame = () => {
+    if (currentGameIndex < games.length - 1) {
+      setCurrentGameIndex(prev => prev + 1);
+    }
+  };
+
+  const handlePreviousGame = () => {
+    if (currentGameIndex > 0) {
+      setCurrentGameIndex(prev => prev - 1);
+    }
+  };
+
+  const handleBackToLearn = () => {
+    if (returnPath) {
+      navigate(returnPath);
+    } else {
+      navigate('/information');
+    }
   };
 
   const getGameTypeInfo = (type: string) => {
@@ -49,165 +101,162 @@ const GameDemo: React.FC = () => {
     }
   };
 
-  if (selectedGame) {
-    return (
-      <div className="w-full bg-neutral-50">
-        <div className="container mx-auto px-4 py-6">
-          <div className="mb-6">
+  const gameTypeInfo = getGameTypeInfo(currentGame.type);
+  const isCurrentGameCompleted = completedGames.has(currentGame.id);
+  const totalCompleted = completedGames.size;
+  const progressPercentage = Math.round((totalCompleted / games.length) * 100);
+
+  return (
+    <div className="w-full min-h-screen bg-neutral-50">
+      <div className="container mx-auto px-4 py-6">
+        {/* Header with Navigation and Progress */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          {/* Top Navigation */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-between items-start mb-6">
             <Button
               variant="outline"
-              onClick={handleBackToMenu}
+              onClick={handleBackToLearn}
               className="gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Games
+              Back to Topic Overview
             </Button>
-          </div>
-          
-          <DragDropGame
-            game={selectedGame}
-            onComplete={() => handleGameComplete(selectedGame.id)}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-full bg-neutral-50">
-      <div className="container mx-auto px-4 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl font-bold text-neutral-800 mb-4">
-            Interactive Learning Games
-          </h1>
-          <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
-            Drag and drop elements to complete educational challenges. 
-            Test your knowledge across different subjects and game types.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {games.map((game, index) => {
-            const gameTypeInfo = getGameTypeInfo(game.type);
-            const isCompleted = completedGames.has(game.id);
             
-            return (
-              <motion.div
-                key={game.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/information')}
+                className="gap-2"
               >
-                <Card className="hover:shadow-lg transition-all duration-300 group relative h-full">
-                  {isCompleted && (
-                    <div className="absolute top-3 right-3 w-8 h-8 bg-success-500 rounded-full flex items-center justify-center">
-                      <Trophy className="w-4 h-4 text-white" />
-                    </div>
-                  )}
-                  
-                  <div className="mb-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${gameTypeInfo.color}`}>
-                        <span className="mr-1">{gameTypeInfo.icon}</span>
-                        {gameTypeInfo.label}
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-xl font-semibold text-neutral-800 mb-2 group-hover:text-primary-600 transition-colors">
-                      {game.title}
-                    </h3>
-                    
-                    <p className="text-neutral-600 leading-relaxed mb-4">
-                      {game.description}
-                    </p>
-                    
-                    <div className="bg-neutral-50 p-3 rounded-lg mb-4">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-neutral-600">
-                          <Target className="w-4 h-4 inline mr-1" />
-                          {game.droppableBlanks.length} challenges
-                        </span>
-                        <span className="text-neutral-600">
-                          {game.draggableElements.length} options
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                <Home className="w-4 h-4" />
+                All Topics
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCompletedGames(new Set())}
+                className="gap-2"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Reset Progress
+              </Button>
+            </div>
+          </div>
 
-                  <Button
-                    onClick={() => setSelectedGame(game)}
-                    className="w-full gap-2 group-hover:gap-3 transition-all"
-                    variant={isCompleted ? "outline" : "default"}
-                  >
-                    <Play className="w-4 h-4" />
-                    {isCompleted ? 'Play Again' : 'Start Game'}
-                  </Button>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Stats Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <Card className="bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200" padding="lg">
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Trophy className="w-6 h-6 text-primary-600" />
-                <h3 className="text-xl font-semibold text-primary-800">
-                  Your Progress
-                </h3>
+          {/* Topic and Progress Header */}
+          <Card className="bg-gradient-to-r from-primary-100 to-primary-200 border-primary-200" padding="lg">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold text-neutral-800 mb-2">
+                  {topic}
+                </h1>
+                {originalQuery && (
+                  <p className="text-neutral-600 italic text-sm">
+                    Generated from: "{originalQuery}"
+                  </p>
+                )}
               </div>
               
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary-700">
-                    {completedGames.size}
-                  </div>
-                  <div className="text-sm text-primary-600">Games Completed</div>
+              <div className="text-right">
+                <div className="text-sm text-neutral-600 mb-1">
+                  Game Progress
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary-700">
-                    {games.length}
-                  </div>
-                  <div className="text-sm text-primary-600">Total Games</div>
+                <div className="text-xl font-bold text-primary-700">
+                  {totalCompleted} / {games.length}
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary-700">
-                    {Math.round((completedGames.size / games.length) * 100)}%
-                  </div>
-                  <div className="text-sm text-primary-600">Success Rate</div>
+                <div className="text-sm text-primary-600">
+                  {progressPercentage}% Complete
                 </div>
               </div>
-              
-              <div className="w-full bg-primary-200 rounded-full h-3">
-                <div 
-                  className="bg-primary-600 h-3 rounded-full transition-all duration-500"
-                  style={{ 
-                    width: `${(completedGames.size / games.length) * 100}%` 
-                  }}
-                />
-              </div>
-              
-              {completedGames.size === games.length && (
-                <div className="mt-4 text-primary-700 font-medium">
-                  🎉 Congratulations! You've completed all games!
-                </div>
-              )}
             </div>
           </Card>
         </motion.div>
+
+        {/* Game Navigation Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-6"
+        >
+          <Card className="bg-white border-2 border-neutral-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {/* Game Type Badge */}
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${gameTypeInfo.color}`}>
+                  <span className="mr-1">{gameTypeInfo.icon}</span>
+                  {gameTypeInfo.label}
+                </span>
+                
+                {/* Game Title and Status */}
+                <div>
+                  <h3 className="font-semibold text-neutral-800">
+                    {currentGame.title}
+                  </h3>
+                  <p className="text-sm text-neutral-600">
+                    Game {currentGameIndex + 1} of {games.length}
+                    {isCurrentGameCompleted && (
+                      <span className="ml-2 text-success-600">✓ Completed</span>
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              {/* Game Navigation Controls */}
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePreviousGame}
+                  disabled={currentGameIndex === 0}
+                  className="gap-1"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Previous
+                </Button>
+                
+                <span className="text-sm text-neutral-500 px-2">
+                  {currentGameIndex + 1} / {games.length}
+                </span>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNextGame}
+                  disabled={currentGameIndex === games.length - 1}
+                  className="gap-1"
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Current Game */}
+        <motion.div
+          key={currentGame.id}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <DragDropGame
+            game={currentGame}
+            onComplete={() => handleGameComplete(currentGame.id)}
+          />
+        </motion.div>
+
+        {/* Progress Summary at Bottom */}
+        
       </div>
     </div>
   );
 };
 
-export default GameDemo;
+export default DragPage;
