@@ -21,8 +21,6 @@ const DraggableElementComponent: React.FC<DraggableElementProps> = ({
 
   return (
     <motion.div
-      draggable={!isUsed}
-      onDragStart={handleDragStart}
       className={`
         flex items-center gap-2 px-4 py-3 rounded-lg border-2 cursor-grab active:cursor-grabbing
         transition-all duration-200
@@ -34,11 +32,16 @@ const DraggableElementComponent: React.FC<DraggableElementProps> = ({
       whileHover={!isUsed ? { scale: 1.02 } : {}}
       whileTap={!isUsed ? { scale: 0.98 } : {}}
     >
-      <GripVertical className="w-4 h-4" />
-      <span className="font-medium">{element?.label}</span>
+      <div
+        draggable={!isUsed}
+        onDragStart={handleDragStart}
+        className="flex items-center gap-2 w-full"
+      >
+        <GripVertical className="w-4 h-4" />
+        <span className="font-medium">{element?.label}</span>
+      </div>
     </motion.div>
   );
 };
-
 
 export default DraggableElementComponent;

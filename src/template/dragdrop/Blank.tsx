@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import type { DroppableBlank,DraggableElement } from '../../types';
 
 interface DroppableBlankProps {
   blank: DroppableBlank;

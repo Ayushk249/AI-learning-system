@@ -1,6 +1,6 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
-import { Lightbulb, Cog, Rocket, Users2 } from 'lucide-react';
+import { Lightbulb} from 'lucide-react';
 import  Card  from '../components/ui/Card';
 
 const About = () => {
