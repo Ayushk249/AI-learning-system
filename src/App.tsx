@@ -5,7 +5,7 @@ import { AppProvider } from './context/AppContext';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
-
+import DragPage from './pages/DragPage';
 
 function App() {
 
@@ -13,11 +13,12 @@ function App() {
   return (
 
       <Router>
-        <div className="App flex-1 w-full ">
+        <div className="App w-full ">
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="about" element={<About />} />
+              <Route path="/drag" element={<DragPage/>} />
             </Route>
           </Routes>
         </div>

@@ -12,6 +12,7 @@ const Header: React.FC = () => {
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
   ];
+  
 
   const isActiveLink = (path: string) => {
     return location.pathname === path;

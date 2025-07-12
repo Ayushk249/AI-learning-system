@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Lightbulb, Cog, Rocket, Users2 } from 'lucide-react';
 import  Card  from '../components/ui/Card';
 
-const About: React.FC = () => {
+const About = () => {
   return (
     <div className="min-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
