@@ -170,8 +170,8 @@ const Home = () => {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-4xl md:text-6xl font-bold text-neutral-800 mb-6">
-            Learn
-            <span className="text-primary-600 block">Anything</span>
+            What's something 
+            <span className="text-primary-600 block">you’re curious about today?</span>
           </h1>
           <p className="text-xl text-neutral-600 mb-8 max-w-3xl mx-auto leading-relaxed">
             Ask me what you'd like to learn, and I'll create an interactive educational experience just for you.
