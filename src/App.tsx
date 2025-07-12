@@ -16,7 +16,7 @@ function App() {
         <div className="App w-full ">
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
+              <Route path='/' index element={<Home />} />
               <Route path="about" element={<About />} />
               <Route path="information" element={<Information/>} />
             <Route path="/:id/learn" element={<LearnTopic />} />
