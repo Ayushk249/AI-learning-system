@@ -4,7 +4,7 @@ import { RotateCcw, Trophy, Target } from 'lucide-react';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Toast from '../../components/ui/Toast';
-import type {Game, DraggableElement, DroppableBlank, FilledBlank} from '../../types';
+import type {Game, DraggableElement, FilledBlank} from '../../types';
 import DroppableBlankComponent from './Blank';
 import DraggableElementComponent from './DraggableElement';
 

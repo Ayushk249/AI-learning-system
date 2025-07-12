@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Play, Target, Gamepad2, Zap, Brain, Trophy, BookOpen, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Play, Gamepad2, Brain, BookOpen, Lightbulb } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
@@ -15,7 +15,8 @@ interface TopicData {
 interface LearnPageData {
   topicData: TopicData;
   originalQuery?: string;
-  originalResponseData?: any;
+  activityContent?: string;
+
 }
 
 const LearnTopic: React.FC = () => {
@@ -42,7 +43,7 @@ const LearnTopic: React.FC = () => {
     );
   }
 
-  const { topicData, originalQuery, originalResponseData } = learnData;
+  const { topicData, originalQuery,activityContent } = learnData;
 
   const getTemplateInfo = (template: string) => {
     switch (template) {
@@ -84,119 +85,41 @@ const LearnTopic: React.FC = () => {
     }
   };
 
-  const handleTestSkills = async () => {
-    setGeneratingGames(true);
+const handleTestSkills = async () => {
+  setGeneratingGames(true);
+  
+  try {
+    let parsedGames;
     
-    try {
-      // TODO: Replace this with your actual games API call
-      // const response = await fetch('your-games-api-endpoint', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ 
-      //     topic: topicData.Topic,
-      //     template: topicData['Suggested Interactive Template'],
-      //     originalQuery,
-      //     originalResponseData
-      //   }),
-      // });
-      // const generatedGames = await response.json();
-      
-      // Simulate API call for generating games
-      const simulateGameGeneration = () => {
-        return new Promise<any>((resolve) => {
-          setTimeout(() => {
-            // Generate mock games based on the topic and template
-            const mockGames = [
-              {
-                id: "evolution-chairs-match",
-                type: "match",
-                title: "Match Chair Styles to Historical Periods",
-                description: "Drag each chair style to its correct historical period.",
-                draggableElements: [
-                  { id: "windsor", label: "Windsor Chair" },
-                  { id: "chippendale", label: "Chippendale" },
-                  { id: "bauhaus", label: "Bauhaus Chair" },
-                  { id: "eames", label: "Eames Lounge Chair" },
-                  { id: "throne", label: "Medieval Throne" },
-                  { id: "baroque", label: "Baroque Chair" },
-                ],
-                droppableBlanks: [
-                  { id: "medieval", label: "Medieval Period (5th-15th century)", correctElementId: "throne" },
-                  { id: "colonial", label: "Colonial Period (1600s-1700s)", correctElementId: "windsor" },
-                  { id: "georgian", label: "Georgian Era (1714-1830)", correctElementId: "chippendale" },
-                  { id: "baroque-period", label: "Baroque Period (17th century)", correctElementId: "baroque" },
-                  { id: "modern", label: "Modern Era (1920s-1950s)", correctElementId: "bauhaus" },
-                  { id: "contemporary", label: "Contemporary (1950s-present)", correctElementId: "eames" },
-                ],
-              },
-              {
-                id: "chair-materials-timeline",
-                type: "fill-in-blanks",
-                title: "Chair Materials Through Time",
-                description: "Complete the timeline by placing materials in the correct periods.",
-                draggableElements: [
-                  { id: "wood", label: "Solid Wood" },
-                  { id: "metal", label: "Steel & Metal" },
-                  { id: "plastic", label: "Molded Plastic" },
-                  { id: "upholstery", label: "Padded Upholstery" },
-                  { id: "composite", label: "Composite Materials" },
-                ],
-                droppableBlanks: [
-                  { id: "ancient", label: "Ancient Times", correctElementId: "wood" },
-                  { id: "victorian", label: "Victorian Era", correctElementId: "upholstery" },
-                  { id: "industrial", label: "Industrial Revolution", correctElementId: "metal" },
-                  { id: "space-age", label: "Space Age Design", correctElementId: "plastic" },
-                  { id: "modern-era", label: "Modern Era", correctElementId: "composite" },
-                ],
-              },
-              {
-                id: "design-principles-math",
-                type: "math-fill",
-                title: "Design Proportions & Measurements",
-                description: "Complete the design calculations for optimal chair dimensions.",
-                draggableElements: [
-                  { id: "num-18", label: "18" },
-                  { id: "num-32", label: "32" },
-                  { id: "num-45", label: "45" },
-                  { id: "num-90", label: "90" },
-                  { id: "num-105", label: "105" },
-                ],
-                droppableBlanks: [
-                  { id: "seat-height", label: "Standard seat height (inches)", displayPrefix: "Seat height: ", correctElementId: "num-18" },
-                  { id: "table-height", label: "Standard table height (inches)", displayPrefix: "Table height: ", correctElementId: "num-32" },
-                  { id: "back-angle", label: "Optimal backrest angle (degrees)", displayPrefix: "Backrest angle: ", correctElementId: "num-105" },
-                  { id: "seat-depth", label: "Comfortable seat depth (cm)", displayPrefix: "Seat depth: ", correctElementId: "num-45" },
-                  { id: "leg-angle", label: "Leg support angle (degrees)", displayPrefix: "Leg angle: ", correctElementId: "num-90" },
-                ],
-              }
-            ];
-            
-            resolve(mockGames);
-          }, 3000);
-        });
-      };
 
-      const generatedGames = await simulateGameGeneration();
-      
-      // Navigate to drag page with the generated games
-      navigate(`/${id}/learn/drag`, {
-        state: {
-          games: generatedGames,
-          topic: topicData.Topic,
-          originalQuery,
-          returnPath: `/${id}/learn`
-        }
-      });
-      
-    } catch (error) {
-      console.error('Error generating games:', error);
-      // You can add error handling here
-    } finally {
-      setGeneratingGames(false);
+    if (activityContent) {
+      try {
+        parsedGames = [JSON.parse(activityContent)];
+      } catch (parseError) {
+        console.error('Error parsing activity content:', parseError);
+        throw new Error('Failed to load interactive content. Please try again.');
+      }
+    } else {
+      throw new Error('No interactive content available. Please go back and try again.');
     }
-  };
+    
+ 
+    navigate(`/${id}/learn/drag`, {
+      state: {
+        games: parsedGames,
+        topic: topicData.Topic,
+        originalQuery,
+        returnPath: `/${id}/learn`
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error generating games:', error);
+    alert('Failed to generate interactive games. Please try again later.');
+  } finally {
+    setGeneratingGames(false);
+  }
+};
 
   const templateInfo = getTemplateInfo(topicData['Suggested Interactive Template']);
 

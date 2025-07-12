@@ -5,8 +5,17 @@ from backendgpt import generate_subtopics
 from backendgpt import generate_explanation_and_activity 
 from backendgpt import generate_interactive_activity
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Global store to keep user_question
 variable_storage = {}
@@ -18,8 +27,13 @@ class QuestionInput(BaseModel):
 class SubtopicRequest(BaseModel):
     subtopic: str
 
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
 @app.post("/topics_to_learn")
 def explain(input: QuestionInput):
+   
 
     result = generate_subtopics(
         user_question=input.user_question
@@ -42,7 +56,7 @@ def explain(input: QuestionInput):
 
 @app.post("/explain_topic")
 def generate_explanation(input: SubtopicRequest):
-
+  
     user_question = variable_storage.get("stored_question")
 
     result = generate_explanation_and_activity(

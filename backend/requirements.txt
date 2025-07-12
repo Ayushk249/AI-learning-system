@@ -1,0 +1,12 @@
+# Core Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# HTTP Requests
+requests==2.31.0
+
+# Data Validation (included with FastAPI but explicit)
+pydantic==2.5.0
+
+# Form handling
+python-multipart==0.0.6

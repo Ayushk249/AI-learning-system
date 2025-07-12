@@ -39,84 +39,48 @@ const Information: React.FC = () => {
   }
 
   const handleTopicClick = async (topic: string, index: number) => {
-    setSelectedTopicLoading(`topic-${index}`);
-    
-    try {
-      console.log('Selected topic:', topic);
-      
-      // TODO: Replace this with your actual API call
-      // const response = await fetch('your-explanation-api-endpoint', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ topic, originalData: responseData }),
-      // });
-      // const topicExplanation = await response.json();
-      
-      // Simulate API call for generating topic explanation
-      const simulateExplanationGeneration = () => {
-        return new Promise<any>((resolve) => {
-          setTimeout(() => {
-            // Generate mock explanations based on the topic
-            const mockExplanations = {
-              'Evolution of chair design over time': {
-                Topic: 'Evolution of chair design over time',
-                Explanation: 'The evolution of chair design over time is a fascinating story that reflects the intersection of technology, culture, and human needs. Imagine a timeline that stretches from ancient civilizations to modern times, with each era leaving its mark on chair design. In ancient Egypt, Greece, and Rome, chairs were simple, often with just a stool or a backless seat, reserved for the elite. As societies evolved, so did chair design. During the Middle Ages, chairs became more ornate, with intricate carvings and upholstery, signifying wealth and status. The Industrial Revolution brought mass production techniques, making chairs more accessible and affordable for the general population. This period also saw the introduction of new materials like steel and plastic, which further expanded design possibilities. In the 20th century, designers like Charles and Ray Eames and Eero Saarinen introduced innovative, modernist chair designs that emphasized comfort, functionality, and aesthetics. Today, chair design continues to evolve, incorporating sustainable materials, ergonomic principles, and technological advancements. This evolution is akin to a river, constantly flowing and changing, yet always reflecting the needs and values of the people who use them.',
-                'Suggested Interactive Template': 'match_pairs'
-              },
-              'Historical periods and their influence on chair styles': {
-                Topic: 'Historical periods and their influence on chair styles',
-                Explanation: 'Throughout history, chair styles have been deeply influenced by the cultural, artistic, and technological movements of their time. Each historical period brought unique characteristics that defined furniture design. The Baroque period (17th century) emphasized grandeur and ornate decoration, resulting in chairs with elaborate carvings, gilded details, and rich fabrics. The Neoclassical era drew inspiration from ancient Greek and Roman designs, creating chairs with clean lines, symmetrical proportions, and classical motifs. The Industrial Revolution democratized chair production, leading to simpler, more functional designs that could be mass-produced. Art Nouveau introduced organic forms and flowing lines, while the Arts and Crafts movement emphasized handcraftsmanship and natural materials. The Modernist movement of the 20th century stripped away ornamentation in favor of form following function, creating iconic designs that remain popular today.',
-                'Suggested Interactive Template': 'timeline_sort'
-              },
-              'Notable chair designers and their contributions': {
-                Topic: 'Notable chair designers and their contributions',
-                Explanation: 'The world of chair design has been shaped by visionary designers who revolutionized how we think about seating. Charles and Ray Eames pioneered the use of molded plywood and fiberglass, creating comfortable, affordable chairs that became design icons. Arne Jacobsen\'s Ant Chair and Egg Chair demonstrated the beauty of organic forms in furniture. Eero Saarinen\'s Tulip Chair eliminated the "slum of legs" under tables with its single pedestal base. Marcel Breuer\'s Wassily Chair was one of the first to use tubular steel, inspiring countless industrial designs. More recently, designers like Philippe Starck and Karim Rashid have brought playful, contemporary aesthetics to chair design, while sustainability-focused designers are exploring eco-friendly materials and production methods.',
-                'Suggested Interactive Template': 'designer_match'
-              },
-              'Cultural significance of chairs in different societies': {
-                Topic: 'Cultural significance of chairs in different societies',
-                Explanation: 'Chairs carry deep cultural significance beyond their functional purpose, serving as symbols of power, status, and social hierarchy across different societies. In ancient Egypt, thrones represented divine authority, with elaborate designs reserved for pharaohs and deities. Medieval European societies used chairs to denote social rank - only the highest nobility were permitted to sit in the presence of superiors. In Asian cultures, traditional seating often involves floor cushions or low platforms, reflecting philosophical values of humility and connection to the earth. The concept of the "chairman" literally derives from the person who had the right to sit in the chair during meetings. Different cultures have developed unique seating solutions: Japanese zaisu chairs for floor sitting, African carved stools as symbols of chieftainship, and Scandinavian designs emphasizing equality and simplicity. Today, chair design continues to reflect cultural values, from ergonomic office chairs representing productivity culture to sustainable designs reflecting environmental consciousness.',
-                'Suggested Interactive Template': 'cultural_match'
-              },
-              'default': {
-                Topic: topic,
-                Explanation: `This topic explores the fascinating aspects of ${topic.toLowerCase()}. Understanding this subject involves examining multiple perspectives, historical context, and practical applications. Through interactive learning, you'll discover key concepts, important relationships, and real-world implications. This comprehensive overview will provide you with a solid foundation to build upon, whether you're a beginner or looking to deepen your existing knowledge. The interactive elements will help reinforce learning through hands-on practice and immediate feedback.`,
-                'Suggested Interactive Template': 'general_match'
-              }
-            };
+  setSelectedTopicLoading(`topic-${index}`)
+  
+  try {
+    const response = await fetch('https://ai-learning-backend-3.onrender.com/explain_topic', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ subtopic: topic }),
+    });
 
-            // Select appropriate explanation based on topic
-            const selectedExplanation = mockExplanations[topic] || mockExplanations['default'];
-            resolve(selectedExplanation);
-          }, 2000);
-        });
-      };
-
-      const topicExplanation = await simulateExplanationGeneration();
-      
-      // Generate unique ID for this learning session
-      const learningId = `learn-${Date.now()}`;
-      
-      // Navigate to learn page with topic explanation
-      console.log(learningId)
-      navigate(`/${learningId}/learn`, {
-        state: {
-          topicData: topicExplanation,
-          originalQuery: userQuery,
-          originalResponseData: responseData
-        }
-      });
-      
-    } catch (error) {
-      console.error('Error generating explanation:', error);
-      // You can add error handling here (e.g., show a toast notification)
-    } finally {
-      setSelectedTopicLoading(null);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
     }
-  };
 
+    const topicResponse = await response.json();
+    console.log('✅ API Response:', topicResponse);
+    const topicData = {
+      Topic: topicResponse.topic,
+      Explanation: topicResponse.explanation,
+      'Suggested Interactive Template': topicResponse.template_type
+    };
+    
+    const learningId = `learn-${Date.now()}`;
+    
+    navigate(`/${learningId}/learn`, {
+      state: {
+        topicData: topicData,
+        originalQuery: userQuery,
+        originalResponseData: responseData,
+        activityContent: topicResponse.activity_content
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error fetching topic explanation:', error);
+    setSelectedTopicLoading(null);
+  } finally {
+    setSelectedTopicLoading(null);
+  }
+};
   const handleGenerateLearningContent = async () => {
     setGeneratingContent(true);
     

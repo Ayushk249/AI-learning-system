@@ -1,16 +1,22 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[12]:
-
 
 import requests
+import time
+import json
+import re
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-url = "https://api.together.xyz/v1/chat/completions"
+
+url = os.getenv("API_BASE_URL", "https://api.together.xyz/v1/chat/completions")
+API_KEY = os.getenv("API_KEY")
+if not API_KEY:
+    raise ValueError("TOGETHER_API_KEY environment variable is required")
+
 headers = {
-    "Authorization": "Bearer 0a12e0c577c401ea0e5d79f44fba4fe49b8ef5b865e864c6f6e6965bb756540d"
+    "Authorization": "Bearer {API_KEY}".format(API_KEY=API_KEY)
 }
-json = {
+system_prompt = {
     "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
     "messages": [
         {"role": "system", "content": "You are an educational tutor that helps students explore topics."},
@@ -19,23 +25,14 @@ json = {
     "temperature": 0.7,
     "max_tokens": 300
 }
-response = requests.post(url, headers=headers, json=json)
-print(response.json())
 
 
-# In[13]:
 
 
-response.json()["choices"][0]["message"]["content"]
 
 
-# In[243]:
 
 
-import requests
-import time
-import json
-import re
 
 # TOGETHER.AI API SETUP
 url = "https://api.together.xyz/v1/chat/completions"
@@ -46,8 +43,6 @@ headers = {
 # YOUR QUESTION TO ANALYZE
 user_question = "who invented the chair"
 
-
-# In[244]:
 
 
 def generate_subtopics(user_question, retries = 3, delay = 2):
@@ -115,8 +110,7 @@ def generate_subtopics(user_question, retries = 3, delay = 2):
                 print(f"🚫 Too many requests — attempt {attempt}")
             else:
                 print(f"❌ HTTP error on attempt {attempt}: {e}")
-        except (requests.exceptions.RequestException, KeyError, json.JSONDecodeError) as e:
-            print(f"❌ Other error on attempt {attempt}: {e}")
+        
             
         wait_time = delay * (2 ** (attempt - 1)) + (0.5 * attempt)
         print(f"🔁 Retrying in {wait_time:.1f} seconds...\n")
@@ -126,25 +120,9 @@ def generate_subtopics(user_question, retries = 3, delay = 2):
     return None
 
 
-# In[245]:
 
 
-subtopics_json = generate_subtopics(user_question, retries = 3, delay = 2)
 
-
-# In[246]:
-
-
-print(subtopics_json)
-
-
-# In[247]:
-
-
-subtopic = subtopics_json['curiosity_tree'][0]
-
-
-# In[248]:
 
 
 def generate_explanation_and_activity(subtopic, user_question, retries=3, delay=2):
@@ -217,19 +195,19 @@ def generate_explanation_and_activity(subtopic, user_question, retries=3, delay=
 # In[249]:
 
 
-explanation_json = generate_explanation_and_activity(subtopic, user_question, retries=3, delay=2)
+# explanation_json = generate_explanation_and_activity(subtopic, user_question, retries=3, delay=2)
 
 
 # In[251]:
 
 
-print(explanation_json)
+# print(explanation_json)
 
 
 # In[252]:
 
 
-type(explanation_json)
+# type(explanation_json)
 
 
 # In[255]:
@@ -351,52 +329,5 @@ def generate_interactive_activity(topic, explanation, template_type = 'drag_drop
         else:
             print("❌ Max retries reached. Could not generate activity.")
             return None
-
-
-# In[256]:
-
-
-activity_json = generate_interactive_activity(explanation_json['Topic'], explanation_json['Explanation'], retries=3, delay=2)
-
-
-# In[257]:
-
-
-print(activity_json)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
 
 

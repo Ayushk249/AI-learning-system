@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Send, Lightbulb, Target, Zap, Users, BookOpen, Calculator, Globe } from 'lucide-react';
+import { Send, Lightbulb, Target, Users} from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
@@ -9,125 +9,156 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 const Home = () => {
   const [userQuery, setUserQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userQuery.trim()) return;
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!userQuery.trim()) return;
     
-    setIsLoading(true);
-    console.log('User query stored:', userQuery);
+  //   setIsLoading(true);
+  //   console.log('User query stored:', userQuery);
     
-    try {
-      // TODO: Replace this with your actual API call
-      // const response = await fetch('your-api-endpoint', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ query: userQuery }),
-      // });
-      // const data = await response.json();
+  //   try {
+  //     // TODO: Replace this with your actual API call
+  //     // const response = await fetch('your-api-endpoint', {
+  //     //   method: 'POST',
+  //     //   headers: {
+  //     //     'Content-Type': 'application/json',
+  //     //   },
+  //     //   body: JSON.stringify({ query: userQuery }),
+  //     // });
+  //     // const data = await response.json();
       
-      // For now, simulate the API response
-      const simulateApiCall = () => {
-        return new Promise<any>((resolve) => {
-          setTimeout(() => {
-            // Simulate different responses based on query content
-            const mockResponses = {
-              chair: {
-                subject_area: 'History, Design, Furniture',
-                depth_level: 'Introductory',
-                question_type: 'Factual',
-                curiosity_tree: [
-                  'Evolution of chair design over time',
-                  'Historical periods and their influence on chair styles',
-                  'Notable chair designers and their contributions',
-                  'Cultural significance of chairs in different societies'
-                ]
-              },
-              solar: {
-                subject_area: 'Astronomy, Physics, Science',
-                depth_level: 'Introductory',
-                question_type: 'Factual',
-                curiosity_tree: [
-                  'Formation and structure of our solar system',
-                  'Characteristics of planets and their moons',
-                  'The Sun as the center of our solar system',
-                  'Exploration missions and space discoveries'
-                ]
-              },
-              math: {
-                subject_area: 'Mathematics, Arithmetic',
-                depth_level: 'Introductory',
-                question_type: 'Procedural',
-                curiosity_tree: [
-                  'Understanding multiplication concepts and patterns',
-                  'Memory techniques and strategies for times tables',
-                  'Real-world applications of multiplication',
-                  'Building foundation for advanced mathematical concepts'
-                ]
-              },
-              default: {
-                subject_area: 'General Knowledge',
-                depth_level: 'Introductory',
-                question_type: 'Factual',
-                curiosity_tree: [
-                  'Fundamental concepts and definitions',
-                  'Historical context and background',
-                  'Practical applications and examples',
-                  'Related topics for further exploration'
-                ]
-              }
-            };
+  //     // For now, simulate the API response
+  //     const simulateApiCall = () => {
+  //       return new Promise<any>((resolve) => {
+  //         setTimeout(() => {
+  //           // Simulate different responses based on query content
+  //           const mockResponses = {
+  //             chair: {
+  //               subject_area: 'History, Design, Furniture',
+  //               depth_level: 'Introductory',
+  //               question_type: 'Factual',
+  //               curiosity_tree: [
+  //                 'Evolution of chair design over time',
+  //                 'Historical periods and their influence on chair styles',
+  //                 'Notable chair designers and their contributions',
+  //                 'Cultural significance of chairs in different societies'
+  //               ]
+  //             },
+  //             solar: {
+  //               subject_area: 'Astronomy, Physics, Science',
+  //               depth_level: 'Introductory',
+  //               question_type: 'Factual',
+  //               curiosity_tree: [
+  //                 'Formation and structure of our solar system',
+  //                 'Characteristics of planets and their moons',
+  //                 'The Sun as the center of our solar system',
+  //                 'Exploration missions and space discoveries'
+  //               ]
+  //             },
+  //             math: {
+  //               subject_area: 'Mathematics, Arithmetic',
+  //               depth_level: 'Introductory',
+  //               question_type: 'Procedural',
+  //               curiosity_tree: [
+  //                 'Understanding multiplication concepts and patterns',
+  //                 'Memory techniques and strategies for times tables',
+  //                 'Real-world applications of multiplication',
+  //                 'Building foundation for advanced mathematical concepts'
+  //               ]
+  //             },
+  //             default: {
+  //               subject_area: 'General Knowledge',
+  //               depth_level: 'Introductory',
+  //               question_type: 'Factual',
+  //               curiosity_tree: [
+  //                 'Fundamental concepts and definitions',
+  //                 'Historical context and background',
+  //                 'Practical applications and examples',
+  //                 'Related topics for further exploration'
+  //               ]
+  //             }
+  //           };
 
-            // Simple logic to pick appropriate response
-            const query = userQuery.toLowerCase();
-            let responseKey = 'default';
+  //           // Simple logic to pick appropriate response
+  //           const query = userQuery.toLowerCase();
+  //           let responseKey = 'default';
             
-            if (query.includes('chair') || query.includes('furniture')) {
-              responseKey = 'chair';
-            } else if (query.includes('solar') || query.includes('planet')) {
-              responseKey = 'solar';
-            } else if (query.includes('math') || query.includes('multiplication')) {
-              responseKey = 'math';
-            }
+  //           if (query.includes('chair') || query.includes('furniture')) {
+  //             responseKey = 'chair';
+  //           } else if (query.includes('solar') || query.includes('planet')) {
+  //             responseKey = 'solar';
+  //           } else if (query.includes('math') || query.includes('multiplication')) {
+  //             responseKey = 'math';
+  //           }
 
-            resolve(mockResponses[responseKey]);
-          }, 2000); // 2 second delay to simulate API call
-        });
-      };
+  //           resolve(mockResponses[responseKey]);
+  //         }, 2000); // 2 second delay to simulate API call
+  //       });
+  //     };
 
-      const responseData = await simulateApiCall();
+  //     const responseData = await simulateApiCall();
       
-      // Navigate to Information page with the response data
-      navigate('/information', {
-        state: {
-          responseData,
-          userQuery
-        }
-      });
+  //     // Navigate to Information page with the response data
+  //     navigate('/information', {
+  //       state: {
+  //         responseData,
+  //         userQuery
+  //       }
+  //     });
       
-    } catch (error) {
-      console.error('Error processing query:', error);
-      // You can add error handling here (e.g., show a toast notification)
-    } finally {
-      setIsLoading(false);
+  //   } catch (error) {
+  //     console.error('Error processing query:', error);
+  //     // You can add error handling here (e.g., show a toast notification)
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!userQuery.trim()) return;
+  
+  setIsLoading(true);
+  console.log('User query:', userQuery);
+  
+  try {
+    // Make real API call to your backend
+    const response = await fetch('https://ai-learning-backend-3.onrender.com/topics_to_learn/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user_question: userQuery }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
     }
-  };
 
-  const handleExampleClick = (example: string) => {
-    setUserQuery(example);
-  };
+    const responseData = await response.json();
+    console.log('✅ API Response:', responseData);
+    
+    // Navigate to Information page with the response data
+    navigate('/information', {
+      state: {
+        responseData,
+        userQuery
+      }
+    });
+    
+  } catch (error) {
+    console.error('❌ Error processing query:', error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-  const exampleQueries = [
-    "Teach me about the solar system",
-    "Help me learn multiplication tables", 
-    "Explain photosynthesis in simple terms",
-    "Create a geography quiz about world capitals",
-    "Show me how to solve algebraic equations",
-    "Make a vocabulary game for Spanish words"
-  ];
+
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 px-4 sm:px-6 lg:px-8 py-12">

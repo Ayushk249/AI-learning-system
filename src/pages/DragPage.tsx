@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Play, Trophy, Target, Home, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import DragDropGame from '../template/dragdrop/DragGame';
@@ -45,7 +45,7 @@ const DragPage: React.FC = () => {
     );
   }
 
-  const { games, topic, originalQuery, returnPath } = passedData;
+  const { games, topic, originalQuery} = passedData;
   const currentGame = games[currentGameIndex];
 
   const handleGameComplete = (gameId: string) => {
@@ -99,9 +99,7 @@ const DragPage: React.FC = () => {
 
   const gameTypeInfo = getGameTypeInfo(currentGame.type);
   const isCurrentGameCompleted = completedGames.has(currentGame.id);
-  const totalCompleted = completedGames.size;
-  const progressPercentage = Math.round((totalCompleted / games.length) * 100);
-
+ 
   return (
     <div className="w-full min-h-screen bg-neutral-50">
       <div className="container mx-auto px-4 py-6">

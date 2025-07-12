@@ -5,7 +5,6 @@ export interface BaseTemplate {
   id: string;
   title: string;
   instruction: string;
-  onComplete: (score: number, answers: any) => void;
   onNext?: () => void;
 }
 
