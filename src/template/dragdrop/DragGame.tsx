@@ -49,6 +49,10 @@ const DragDropGame: React.FC<DragDropGameProps> = ({ game, onComplete }) => {
   }, [checkCompletion]);
 
 const handleDrop = useCallback((blankId: string, elementId: string) => {
+      const blank = game.droppableBlanks.find(b => b.id === blankId);
+  const element = game.draggableElements.find(e => e.id === elementId);
+
+        if (!blank || !element) return;
   const isCorrect = blank.correctElementId === element.id;
   
   if (isCorrect) {

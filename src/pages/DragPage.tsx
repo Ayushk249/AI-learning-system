@@ -33,7 +33,7 @@ const DragPage: React.FC = () => {
             It seems you navigated here without game data. Please go back and select a topic first.
           </p>
           <div className="flex gap-4 justify-center">
-            <Button onClick={() => navigate('/information')}>
+            <Button onClick={() => navigate('/')}>
               Return to Topics
             </Button>
             <Button variant="outline" onClick={() => navigate('/')}>
@@ -65,11 +65,7 @@ const DragPage: React.FC = () => {
   };
 
   const handleBackToLearn = () => {
-    if (returnPath) {
-      navigate(returnPath);
-    } else {
-      navigate('/information');
-    }
+    navigate('/');
   };
 
   const getGameTypeInfo = (type: string) => {
@@ -127,15 +123,15 @@ const DragPage: React.FC = () => {
             </Button>
             
             <div className="flex gap-2">
-              <Button
+              {/* <Button
                 variant="outline"
                 size="sm"
-                onClick={() => navigate('/information')}
+                onClick={() => navigate('/')}
                 className="gap-2"
               >
                 <Home className="w-4 h-4" />
                 All Topics
-              </Button>
+              </Button> */}
               <Button
                 variant="outline"
                 size="sm"
@@ -162,17 +158,6 @@ const DragPage: React.FC = () => {
                 )}
               </div>
               
-              <div className="text-right">
-                <div className="text-sm text-neutral-600 mb-1">
-                  Game Progress
-                </div>
-                <div className="text-xl font-bold text-primary-700">
-                  {totalCompleted} / {games.length}
-                </div>
-                <div className="text-sm text-primary-600">
-                  {progressPercentage}% Complete
-                </div>
-              </div>
             </div>
           </Card>
         </motion.div>

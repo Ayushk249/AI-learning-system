@@ -18,19 +18,6 @@ const Footer: React.FC = () => {
             © 2025 Dynamic Learning System. Made for education.
           </div>
 
-          {/* Right side - Links */}
-          <div className="flex items-center gap-4">
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-neutral-600 hover:text-neutral-900 transition-colors"
-            >
-              <Github className="w-4 h-4" />
-              <span className="text-sm">Source Code</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
-          </div>
         </div>
 
         {/* Bottom text */}

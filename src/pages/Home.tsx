@@ -215,7 +215,7 @@ const Home = () => {
       )}
 
       {/* Example Queries */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
@@ -250,7 +250,7 @@ const Home = () => {
             </motion.button>
           ))}
         </div>
-      </motion.div>
+      </motion.div> */}
 
       {/* Features Section */}
       <motion.div
@@ -317,27 +317,6 @@ const Home = () => {
         transition={{ duration: 0.6, delay: 0.8 }}
         className="text-center max-w-4xl mx-auto"
       >
-        <Card className="bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200" padding="lg">
-          <h2 className="text-2xl font-bold text-neutral-800 mb-4">
-            Already Have Games Ready?
-          </h2>
-          <p className="text-neutral-600 mb-6 max-w-2xl mx-auto">
-            Try our existing interactive demos while we work on AI-powered content generation.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/demo">
-              <Button size="lg" className="gap-2">
-                Try Demo Games
-                <Target className="w-5 h-5" />
-              </Button>
-            </Link>
-            <Link to="/about">
-              <Button variant="outline" size="lg">
-                Learn More
-              </Button>
-            </Link>
-          </div>
-        </Card>
       </motion.div>
 
       {/* Footer Note */}

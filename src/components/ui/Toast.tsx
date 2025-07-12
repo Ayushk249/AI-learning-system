@@ -28,7 +28,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, isVisible, onClose }) => {
           exit={{ opacity: 0, y: -50, scale: 0.95 }}
           className="fixed top-4 right-4 z-50"
         >
-          <div className={`flex items-center gap-3 px-6 py-4 rounded-lg shadow-lg ${
+          <div className={`flex bg-slate-500 items-center gap-3 px-6 py-4 rounded-lg shadow-lg ${
             type === 'success' 
               ? 'bg-success-50 border border-success-200 text-success-800' 
               : 'bg-error-50 border border-error-200 text-error-800'
