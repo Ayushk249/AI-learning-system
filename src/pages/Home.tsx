@@ -190,7 +190,7 @@ const Home = () => {
                   <textarea
                     value={userQuery}
                     onChange={(e) => setUserQuery(e.target.value)}
-                    placeholder="What would you like to learn today? (e.g., 'Teach me about the planets' or 'Create a math quiz')"
+                    placeholder="What would you like to learn today? (e.g., 'Why do we dream?' or 'Why is the sky blue?')"
                     className="w-full p-4 pr-16 border-2 border-neutral-200 rounded-lg resize-none focus:border-primary-500 focus:outline-none transition-colors min-h-[120px] text-lg"
                     disabled={isLoading}
                   />
