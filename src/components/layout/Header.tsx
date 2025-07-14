@@ -32,7 +32,7 @@ const Header: React.FC = () => {
             </motion.div>
             <div>
               <h1 className="text-xl font-bold text-neutral-800">
-                Dynamic Learning
+                QurioPilot
               </h1>
               <p className="text-xs text-neutral-500 -mt-1">
                 Interactive Education
