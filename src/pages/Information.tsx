@@ -17,7 +17,7 @@ const Information: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedTopicLoading, setSelectedTopicLoading] = useState<string | null>(null);
-  const [generatingContent, setGeneratingContent] = useState(false);
+
   
   // Get the response data from navigation state
   const responseData = location.state?.responseData as ResponseData;
@@ -81,25 +81,6 @@ const Information: React.FC = () => {
     setSelectedTopicLoading(null);
   }
 };
-  const handleGenerateLearningContent = async () => {
-    setGeneratingContent(true);
-    
-    try {
-      // TODO: Generate comprehensive learning content for all topics
-      console.log('Generating learning content for all topics');
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      // Navigate to learning interface or show generated content
-      // navigate('/learning-interface', { state: { responseData, userQuery } });
-      
-    } catch (error) {
-      console.error('Error generating content:', error);
-    } finally {
-      setGeneratingContent(false);
-    }
-  };
 
   const getDepthLevelColor = (level: string) => {
     switch (level.toLowerCase()) {
@@ -310,28 +291,10 @@ const Information: React.FC = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
-                  size="lg" 
-                  className="gap-2"
-                  onClick={handleGenerateLearningContent}
-                  disabled={generatingContent || selectedTopicLoading !== null}
-                >
-                  {generatingContent ? (
-                    <>
-                      <LoadingSpinner size="sm" color="white" />
-                      Generating Content...
-                    </>
-                  ) : (
-                    <>
-                      <Brain className="w-5 h-5" />
-                      Generate Learning Content
-                    </>
-                  )}
-                </Button>
-                <Button 
                   variant="outline" 
                   size="lg" 
                   onClick={() => navigate('/')}
-                  disabled={generatingContent || selectedTopicLoading !== null}
+                  disabled={selectedTopicLoading !== null}
                 >
                   Try Different Topic
                 </Button>
@@ -340,25 +303,6 @@ const Information: React.FC = () => {
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Loading overlay when generating content */}
-      {generatingContent && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-        >
-          <Card className="p-8 text-center max-w-md mx-4">
-            <LoadingSpinner size="lg" color="primary" className="mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-neutral-800 mb-2">
-              Creating Learning Materials
-            </h3>
-            <p className="text-neutral-600">
-              Generating interactive content for all learning pathways...
-            </p>
-          </Card>
-        </motion.div>
-      )}
     </div>
   );
 };

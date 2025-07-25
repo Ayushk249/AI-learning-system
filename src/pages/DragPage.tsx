@@ -189,35 +189,6 @@ const DragPage: React.FC = () => {
                   </p>
                 </div>
               </div>
-
-              {/* Game Navigation Controls */}
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handlePreviousGame}
-                  disabled={currentGameIndex === 0}
-                  className="gap-1"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  Previous
-                </Button>
-                
-                <span className="text-sm text-neutral-500 px-2">
-                  {currentGameIndex + 1} / {games.length}
-                </span>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleNextGame}
-                  disabled={currentGameIndex === games.length - 1}
-                  className="gap-1"
-                >
-                  Next
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
             </div>
           </Card>
         </motion.div>
