@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, RotateCcw } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import DragDropGame from '../template/dragdrop/DragGame';
@@ -22,7 +22,7 @@ const DragPage: React.FC = () => {
 
   // Get passed data - NO FALLBACK, only use passed games
   const passedData = location.state as DragPageData;
-
+  setCurrentGameIndex(1);
   // If no games data passed, show error and redirect
   if (!passedData || !passedData.games || passedData.games.length === 0) {
     return (
@@ -52,17 +52,7 @@ const DragPage: React.FC = () => {
     setCompletedGames(prev => new Set([...prev, gameId]));
   };
 
-  const handleNextGame = () => {
-    if (currentGameIndex < games.length - 1) {
-      setCurrentGameIndex(prev => prev + 1);
-    }
-  };
 
-  const handlePreviousGame = () => {
-    if (currentGameIndex > 0) {
-      setCurrentGameIndex(prev => prev - 1);
-    }
-  };
 
   const handleBackToLearn = () => {
     navigate('/');
