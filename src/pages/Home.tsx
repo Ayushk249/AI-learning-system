@@ -22,7 +22,7 @@ const Home = () => {
   
   try {
     // Make real API call to your backend
-    const response = await fetch('https://ai-learning-backend-3.onrender.com/topics_to_learn/', {
+    const response = await fetch('https://ai-learning-backend-bjz7.onrender.com/topics_to_learn/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

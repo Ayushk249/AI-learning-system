@@ -42,7 +42,7 @@ const Information: React.FC = () => {
   setSelectedTopicLoading(`topic-${index}`)
   
   try {
-    const response = await fetch('https://ai-learning-backend-3.onrender.com/explain_topic', {
+    const response = await fetch('https://ai-learning-backend-bjz7.onrender.com/explain_topic', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
