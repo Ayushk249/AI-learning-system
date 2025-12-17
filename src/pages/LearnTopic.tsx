@@ -93,8 +93,14 @@ const handleTestSkills = async () => {
     
 
     if (activityContent) {
-      try {
-        parsedGames = [JSON.parse(activityContent)];
+try {
+        // Check if it's a string first. If it's already an object, use it as is.
+        const contentToUse = typeof activityContent === 'string' 
+          ? JSON.parse(activityContent) 
+          : activityContent;
+
+        parsedGames = [contentToUse];
+        console.log('Parsed activity content:', parsedGames);
       } catch (parseError) {
         console.error('Error parsing activity content:', parseError);
         throw new Error('Failed to load interactive content. Please try again.');

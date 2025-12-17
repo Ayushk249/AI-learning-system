@@ -17,12 +17,11 @@ interface DragPageData {
 const DragPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [currentGameIndex, setCurrentGameIndex] = useState(0);
+  const [currentGameIndex] = useState(0);
   const [completedGames, setCompletedGames] = useState<Set<string>>(new Set());
 
   // Get passed data - NO FALLBACK, only use passed games
   const passedData = location.state as DragPageData;
-  setCurrentGameIndex(1);
   // If no games data passed, show error and redirect
   if (!passedData || !passedData.games || passedData.games.length === 0) {
     return (
@@ -47,6 +46,7 @@ const DragPage: React.FC = () => {
 
   const { games, topic, originalQuery} = passedData;
   const currentGame = games[currentGameIndex];
+  console.log('Current Game:', currentGame);
 
   const handleGameComplete = (gameId: string) => {
     setCompletedGames(prev => new Set([...prev, gameId]));
